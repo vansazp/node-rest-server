@@ -1,6 +1,8 @@
 require('./config/config');
 
 const express = require('express');
+const mongoose = require('mongoose');
+
 const app = express();
 const bodyParser = require('body-parser')
 
@@ -13,7 +15,7 @@ app.use(bodyParser.json())
 
 
 app.get('/usuario', function(req, res) {
-    res.json('get Usuario');
+    res.json('get Usuario LOCAL');
 });
 
 app.post('/usuario', function(req, res) {
@@ -44,6 +46,24 @@ app.put('/usuario/:id', function(req, res) {
 app.delete('/usuario', function(req, res) {
     res.json('delete Usuario');
 });
+
+
+let conectar = async() => {
+    await mongoose.connect('mongodb://localhost:27017/cafe', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true
+    });
+};
+
+conectar().then(() => {
+    console.log('Base de datos ONLINE');
+}).catch((err) => {
+    throw err;
+});
+
+
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto: ', process.env.PORT);
